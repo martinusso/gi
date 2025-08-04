@@ -11,6 +11,11 @@ fn main() {
         exec("git", &["--help".into()]);
     }
 
+    // Special compound command: `gi up [branch]`
+    if matches!(raw_args[0].as_str(), "up" | "update") {
+        run_up(&raw_args[1..]);
+    }
+
     let expanded = expand_shortcuts(raw_args);
     exec("git", &expanded);
 }
@@ -25,8 +30,41 @@ fn exec(program: &str, args: &[String]) -> ! {
     exit(status.code().unwrap_or(1));
 }
 
+/// Compound command: switch to branch, fetch, and rebase.
+fn run_up(args: &[String]) -> ! {
+    let branch = args.get(0).map(String::as_str).unwrap_or("main");
+
+    // git switch <branch>
+    let st = Command::new("git")
+        .args(["switch", branch])
+        .status()
+        .expect("failed to switch branch");
+    if !st.success() {
+        exit(st.code().unwrap_or(1));
+    }
+
+    // git fetch -p
+    let st = Command::new("git")
+        .args(["fetch", "-p"])
+        .status()
+        .expect("failed to fetch");
+    if !st.success() {
+        exit(st.code().unwrap_or(1));
+    }
+
+    // git rebase origin/<branch>
+    let remote_branch = format!("origin/{}", branch);
+    let st = Command::new("git")
+        .args(["rebase", remote_branch.as_str()])
+        .status()
+        .expect("failed to rebase");
+
+    exit(st.code().unwrap_or(1));
+}
+
 /// Return the current branch name (needed for `ps` / `psf`).
 fn current_branch() -> String {
+    /* returns branch name currently checked out */
     let output = Command::new("git")
         .args(["rev-parse", "--abbrev-ref", "HEAD"])
         .output()
@@ -115,6 +153,7 @@ fn expand_shortcuts(mut args: Vec<String>) -> Vec<String> {
             v.extend(args);
             v
         }
+
         // Fallback: forward args unchanged (command + args).
         _ => {
             let mut v = vec![first];
