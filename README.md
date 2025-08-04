@@ -10,11 +10,15 @@ gi <shortcut> [args...]
 
 The wrapper expands the _shortcut_ to the full `git` command automatically.
 
----
-
 ## Installation
 
+To install from source you first need to obtain the repository via Git:
+
 ```bash
+# Clone the repository
+git clone https://github.com/martinusso/gi.git
+cd gi
+
 # Build the binary
 cargo build --release
 
@@ -22,9 +26,7 @@ cargo build --release
 cp target/release/gi /usr/local/bin/
 ```
 
-> **Note** `gi` requires only `git` to be installed. No external Graphite CLI is needed.
-
----
+> **Note** `gi` requires only `git` to be installed.
 
 ## Built-in Shortcuts
 
@@ -45,6 +47,8 @@ cp target/release/gi /usr/local/bin/
 | `s`                | `git switch`                               |
 | `ps`               | `git push origin <current-branch>`         |
 | `psf`              | `git push origin <current-branch> --force` |
+| `sp`               | `git stash pop`                            |
+| `su`               | `git stash --include-untracked`            |
 
 ### Extra shortcuts (Graphite-inspired but executed with Git)
 
@@ -57,8 +61,6 @@ cp target/release/gi /usr/local/bin/
 | `sync`    | `git pull --rebase`                                  |
 | `rb`/`ro` | `git rebase origin/main`                             |
 
----
-
 ## Examples
 
 ```bash
@@ -67,7 +69,6 @@ $ gi st
 $ gi chb feature/login
 $ gi ps
 
-# Graphite examples
 $ gi ls
 $ gi c -am "feat: new API"
 $ gi ss
@@ -76,9 +77,3 @@ $ gi u       # up one level in the stack
 
 Feel free to extend or modify the shortcuts in `src/main.rs` to match
 your own workflow.
-
----
-
-## License
-
-MIT © 2024

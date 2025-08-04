@@ -1,7 +1,7 @@
 use std::env;
 use std::process::{Command, exit};
 
-/// `gi` – unified CLI wrapper around Git & Graphite.
+/// `gi` – unified CLI wrapper around Git.
 /// See `README.md` for the complete list of shortcuts.
 fn main() {
     let raw_args: Vec<String> = env::args().skip(1).collect();
@@ -48,10 +48,8 @@ fn expand_shortcuts(mut args: Vec<String>) -> Vec<String> {
         // Explicit invocation `git` – return remaining arguments unchanged.
         "git" | "gi" => args,
 
-        // ────────────────────
-        // Git shortcuts (original)
-        // ────────────────────
-        "st" => prepend("status", args),
+        // Shortcuts
+        "status" | "st" => prepend("status", args),
         "co" => prepend("commit", args),
         "br" => prepend("branch", args),
         "ch" => prepend("checkout", args),
@@ -83,6 +81,16 @@ fn expand_shortcuts(mut args: Vec<String>) -> Vec<String> {
             if first == "psf" {
                 v.push("--force".into());
             }
+            v.extend(args);
+            v
+        }
+        "sp" | "stashpop" => {
+            let mut v = vec!["stash".into(), "pop".into()];
+            v.extend(args);
+            v
+        }
+        "su" | "stashu" => {
+            let mut v = vec!["stash".into(), "--include-untracked".into()];
             v.extend(args);
             v
         }
