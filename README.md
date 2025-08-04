@@ -12,21 +12,50 @@ The wrapper expands the _shortcut_ to the full `git` command automatically.
 
 ## Installation
 
-To install from source you first need to obtain the repository via Git:
+### Quick install (recommended)
+
+Install **gi** in a single command using the bundled script:
 
 ```bash
-# Clone the repository
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/martinusso/gi/main/install.sh)"
+```
+
+or via `wget`:
+
+```bash
+sh -c "$(wget -qO- https://raw.githubusercontent.com/martinusso/gi/main/install.sh)"
+```
+
+### Manual install (from source)
+
+```bash
 git clone https://github.com/martinusso/gi.git
 cd gi
-
-# Build the binary
 cargo build --release
-
-# Copy it somewhere on your $PATH
 cp target/release/gi /usr/local/bin/
 ```
 
-> **Note** `gi` requires only `git` to be installed.
+> **Note** `gi` requires only `git` to be installed (plus the Rust toolchain if you build from source).
+
+## Updating
+
+Already have **gi**? Upgrade to the latest version with:
+
+```bash
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/martinusso/gi/main/update.sh)"
+```
+
+or locally (if the repo is already cloned):
+
+```bash
+./update.sh
+```
+
+Under the hood the script simply runs:
+
+```bash
+cargo install --git https://github.com/martinusso/gi.git --locked --force
+```
 
 ## Built-in Shortcuts
 
